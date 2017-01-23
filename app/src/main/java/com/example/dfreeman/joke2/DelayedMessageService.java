@@ -2,7 +2,9 @@ package com.example.dfreeman.joke2;
 
 import android.app.IntentService;
 import android.content.Intent;
+import android.os.Handler;
 import android.util.Log;
+import android.widget.Toast;
 
 /**
  * Created by dfreeman
@@ -11,9 +13,16 @@ import android.util.Log;
 public class DelayedMessageService extends IntentService {
 
     public static final String EXTRA_MESSAGE = "message";
+    private Handler handler;
 
     public DelayedMessageService() {
         super("DelayedMessageService");
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        handler = new Handler();
+        return super.onStartCommand(intent, flags, startId);
     }
 
     @Override
@@ -30,6 +39,11 @@ public class DelayedMessageService extends IntentService {
     }
 
     private void showText(final String text) {
-        Log.v("DelayedMessageService", "The message is ; " + text);
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(getApplicationContext(), text, Toast.LENGTH_LONG).show();
+            }
+        });
     }
 }
